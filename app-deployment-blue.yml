@@ -1,4 +1,5 @@
-apiVersion: apps/v1
+# BankApp Deployment
+piVersion: apps/v1
 kind: Deployment
 metadata:
   name: app-blue
@@ -15,16 +16,24 @@ spec:
         version: blue
     spec:
       containers:
-      - name: app
-        image: adijaiswal/bankapp:blue  # Replace with your Blue version image
-        env:
-        - name: DB_HOST
-          value: "mysql"  # MySQL service name
-        - name: DB_USER
-          value: "root"
-        - name: DB_PASSWORD
-          value: "password"
-        - name: DB_NAME
-          value: "test_db"
+      - name: bankapp
+        image: anub11/bankapp:v1
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
         ports:
-        - containerPort: 5000
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://mysql-service:3306/bankappdb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+        - name: SPRING_DATASOURCE_USERNAME
+          value: root
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
