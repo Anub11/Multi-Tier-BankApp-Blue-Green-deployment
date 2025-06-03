@@ -1,6 +1,12 @@
 # BankApp Deployment
 apiVersion: apps/v1
 kind: Deployment
+metadata:
+  name: bankapp-deployment-green
+  labels:
+    app: app
+    version: green
+spec:
   replicas: 1
   selector:
     matchLabels:
