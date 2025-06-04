@@ -67,7 +67,7 @@ pipeline {
                     withKubeConfig(caCertificate: '', clusterName: 'anub-cluster', contextName: '', credentialsId: 'k8-token', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://46743932FDE6B34C74566F392E30CABA.gr7.ap-south-1.eks.amazonaws.com') {
                         sh """
                         if ! kubectl get svc app -n ${KUBE_NAMESPACE}; then
-                            kubectl apply -f app-service.yml -n ${KUBE_NAMESPACE}
+                            kubectl apply -f bankappsvc.yml -n ${KUBE_NAMESPACE}
                         fi
                         """
                     }
@@ -80,8 +80,8 @@ pipeline {
                 script {
                     def deploymentFile = (params.DEPLOY_ENV == 'blue') ? 'app-deployment-blue.yml' : 'app-deployment-green.yml'
                     withKubeConfig(caCertificate: '', clusterName: 'anub-cluster', contextName: '', credentialsId: 'k8-token', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://46743932FDE6B34C74566F392E30CABA.gr7.ap-south-1.eks.amazonaws.com') {
-                        sh "kubectl apply -f pv-pvc.yml -n ${KUBE_NAMESPACE}"
-                        sh "kubectl apply -f mysql-ds.yml -n ${KUBE_NAMESPACE}"
+                        
+                        sh "kubectl apply -f mysql.yml -n ${KUBE_NAMESPACE}"
                         sh "kubectl apply -f ${deploymentFile} -n ${KUBE_NAMESPACE}"
                     }
                 }
